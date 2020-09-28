@@ -73,3 +73,10 @@ vim ~/.bash_profile
 export PATH=$PATH:/usr/local/mysql/bin
 source ~/.bash_profile
 
+
+//外键
+CREATE TABLE IF NOT EXISTS `players` (`id` INTEGER NOT NULL auto_increment , `name` VARCHAR(255), `createdAt` DATETIME NOT NULL, `updatedAt` DATETIME NOT NULL, `teamId` INTEGER, PRIMARY KEY (`id`), FOREIGN KEY (`teamId`) REFERENCES `teams` (`id`) ON DELETE SET NULL ON UPDATE CASCADE) ENGINE=InnoDB;
+
+SELECT `player`.`id`, `player`.`name`, `player`.`createdAt`, `player`.`updatedAt`, `player`.`teamId`, `team`.`id` AS `team.id`, `team`.`name` AS `team.name`, `team`.`createdAt` AS `team.createdAt`, `team`.`updatedAt` AS `team.updatedAt` FROM `players` AS `player` LEFT OUTER JOIN `teams` AS `team` ON `player`.`teamId` = `team`.`id`;
+
+SELECT `team`.*, `players`.`id` AS `players.id`, `players`.`name` AS `players.name`, `players`.`createdAt` AS `players.createdAt`, `players`.`updatedAt` AS `players.updatedAt`, `players`.`teamId` AS `players.teamId` FROM (SELECT `team`.`id`, `team`.`name`, `team`.`createdAt`, `team`.`updatedAt` FROM `teams` AS `team` WHERE `team`.`name` = '火箭' LIMIT 1) AS `team` LEFT OUTER JOIN `players` AS `players` ON `team`.`id` = `players`.`teamId`;
