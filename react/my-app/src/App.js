@@ -8,13 +8,15 @@ import {
   useParams
 } from "react-router-dom";
 
+import ContextPage from "./content/context/Pages/ContextPage";
+
 export default function App() {
   return (
     <Router>
       <div>
         <ul>
           <li>
-            <Link to="/">Home</Link>
+            <Link to="/">Context 使用</Link>
           </li>
           <li>
             <Link to="/about">About</Link>
@@ -41,7 +43,7 @@ export default function App() {
 }
 
 function Home() {
-  return <h2>Home</h2>;
+  return <ContextPage></ContextPage>
 }
 
 function About() {
