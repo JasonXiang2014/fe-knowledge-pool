@@ -1,4 +1,5 @@
-import { createStore } from 'redux'
+// import { createStore } from 'redux'
+import { createStore } from '../kredux'
 
 const reducer = (state = 0, action) => {
   switch (action.type) {

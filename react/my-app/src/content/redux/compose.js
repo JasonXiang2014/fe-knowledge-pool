@@ -15,6 +15,6 @@ const r = f1(f2(f3('omg')))
 
 console.log(r)
 let compose = (...funcs) => {
-    return funcs.reduce((a, b) => (...args) => (a(b(...args))))
+    return funcs.reduce((a, b) => (...args) => a(b(...args)))
 }
 console.log(compose(f1, f2, f3)('omg'))
