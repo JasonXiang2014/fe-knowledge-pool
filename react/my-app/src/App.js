@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 
 import ContextPage from "./content/context/Pages/ContextPage";
+import ReduxPage from "./content/redux/pages/ReduxPage";
 
 export default function App() {
   return (
@@ -19,7 +20,7 @@ export default function App() {
             <Link to="/">Context 使用</Link>
           </li>
           <li>
-            <Link to="/about">About</Link>
+            <Link to="/redux">手写redux</Link>
           </li>
           <li>
             <Link to="/topics">Topics</Link>
@@ -27,8 +28,8 @@ export default function App() {
         </ul>
 
         <Switch>
-          <Route path="/about">
-            <About />
+          <Route path="/redux">
+            <Redux />
           </Route>
           <Route path="/topics">
             <Topics />
@@ -46,8 +47,8 @@ function Home() {
   return <ContextPage></ContextPage>
 }
 
-function About() {
-  return <h2>About</h2>;
+function Redux() {
+  return <ReduxPage></ReduxPage>
 }
 
 function Topics() {
