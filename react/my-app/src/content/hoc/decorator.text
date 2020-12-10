@@ -1,0 +1,20 @@
+First, execute the command:
+
+npm install  customize-cra react-app-rewired @babel/plugin-proposal-decorators --save
+
+Create a new file config-overrides.js at project root and then execute the following:
+
+const { override, addDecoratorsLegacy } = require('customize-cra');
+module.exports = override(
+ addDecoratorsLegacy()
+ );
+Also, edit your package.jsonfile ：
+
+"scripts": {
+ "start": "react-app-rewired start",
+ "build": "react-app-rewired build",
+ "test": "react-app-rewired test",
+ "eject": "react-app-rewired eject"
+  },
+then restart.
+
