@@ -10,6 +10,7 @@ import {
 
 import ContextPage from "./content/context/Pages/ContextPage";
 import ReduxPage from "./content/redux/pages/ReduxPage";
+import HocPage from "./content/hoc/pages/HocPage"
 
 export default function App() {
   return (
@@ -23,6 +24,9 @@ export default function App() {
             <Link to="/redux">手写redux</Link>
           </li>
           <li>
+            <Link to="/hoc">HOC</Link>
+          </li>
+          <li>
             <Link to="/topics">Topics</Link>
           </li>
         </ul>
@@ -33,6 +37,9 @@ export default function App() {
           </Route>
           <Route path="/topics">
             <Topics />
+          </Route>
+          <Route path="/hoc">
+            <HOC />
           </Route>
           <Route path="/">
             <Home />
@@ -49,6 +56,10 @@ function Home() {
 
 function Redux() {
   return <ReduxPage></ReduxPage>
+}
+
+function HOC() {
+  return <HocPage></HocPage>
 }
 
 function Topics() {
