@@ -13,6 +13,7 @@ import ReduxPage from "./content/redux/pages/ReduxPage";
 import HocPage from "./content/hoc/pages/HocPage"
 import FormPage from "./content/form/pages/FormPage"
 import ReactReduxPage from "./content/react-redux/pages/ReactReduxPage"
+import ReactReduxHookPage from "./content/react-redux/pages/ReactReduxHookPage"
 
 export default function App() {
   return (
@@ -38,7 +39,7 @@ export default function App() {
             <Link to="/topics">Topics</Link>
           </li>
         </ul>
-
+        <hr></hr>
         <Switch>
           <Route path="/redux">
             <Redux />
@@ -54,6 +55,7 @@ export default function App() {
           </Route>
           <Route path="/react-redux">
             <ReactReduxPage />
+            <ReactReduxHookPage></ReactReduxHookPage>
           </Route>
           <Route path="/">
             <Home />

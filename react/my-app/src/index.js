@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { Provider } from 'react-redux'
+// import { Provider } from 'react-redux'
+import { Provider } from './content/react-redux/k-react-redux'
 import store from './content/react-redux/store'
 
 ReactDOM.render(
