@@ -9,7 +9,7 @@ export default class Field extends Component {
     this.cancelRegister = registerEntity(this)
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.cancelRegister && this.cancelRegister()
   }
 

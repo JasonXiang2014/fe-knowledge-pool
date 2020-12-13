@@ -8,11 +8,9 @@ import { Provider } from './content/react-redux/k-react-redux'
 import store from './content/react-redux/store'
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>,
+  <Provider store={store}>
+    <App />
+  </Provider>,
   document.getElementById('root')
 );
 

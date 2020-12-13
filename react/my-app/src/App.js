@@ -87,7 +87,7 @@ export default function App() {
 }
 
 function Home(pros) {
-  return <Redirect to={{ pathname: '/welocme' }}></Redirect>
+  return <Redirect to={{ pathname: '/welcome' }}></Redirect>
 }
 
 function Redux() {
