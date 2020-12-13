@@ -1,12 +1,25 @@
-import React from "react";
+import React, { Component } from "react";
+// import {
+//   BrowserRouter as Router,
+//   Switch,
+//   Route,
+//   Link,
+//   Redirect,
+//   useRouteMatch,
+//   useParams,
+//   withRouter
+// } from "react-router-dom";
+
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Link,
+  Redirect,
   useRouteMatch,
-  useParams
-} from "react-router-dom";
+  useParams,
+  withRouter
+} from "./content/k-react-router-dom";
 
 import ContextPage from "./content/context/Pages/ContextPage";
 import ReduxPage from "./content/redux/pages/ReduxPage";
@@ -44,7 +57,7 @@ export default function App() {
         </ul>
         <hr></hr>
         <Switch>
-        <Route exact path="/" children={(routerProps) => <Home {...routerProps}></Home>}>
+          <Route exact path="/" children={(routerProps) => <Home {...routerProps}></Home>}>
             {/* <Home /> */}
           </Route>
           <Route path="/context">
@@ -66,6 +79,7 @@ export default function App() {
             <ReactReduxPage />
             <ReactReduxHookPage></ReactReduxHookPage>
           </Route>
+          <Route component={_404Page}></Route>
         </Switch>
       </div>
     </Router>
@@ -73,8 +87,7 @@ export default function App() {
 }
 
 function Home(pros) {
-  console.log('home', pros)
-  return <div>Home</div>
+  return <Redirect to={{ pathname: '/welocme' }}></Redirect>
 }
 
 function Redux() {
@@ -122,4 +135,16 @@ function Topics() {
 function Topic() {
   let { topicId } = useParams();
   return <h3>Requested topic ID: {topicId}</h3>;
+}
+
+@withRouter
+class _404Page extends Component {
+  render() {
+    console.log('withRouter:', this.props)
+    return (
+      <div>
+        <h3>_404Page</h3>
+      </div>
+    );
+  }
 }
