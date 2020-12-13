@@ -1,4 +1,5 @@
 import BrowserRouter from './BrowserRouter'
+import HashRouter from './HashRouter'
 import Router from './Router'
 import Route from './Route'
 import Switch from './Switch'
@@ -10,6 +11,7 @@ import Prompt from './Prompt'
 
 export {
   BrowserRouter,
+  HashRouter,
   Router,
   Route,
   Switch,
