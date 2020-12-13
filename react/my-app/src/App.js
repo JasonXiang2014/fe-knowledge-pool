@@ -21,7 +21,10 @@ export default function App() {
       <div>
         <ul>
           <li>
-            <Link to="/">Context 使用</Link>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/context">Context 使用</Link>
           </li>
           <li>
             <Link to="/redux">手写redux</Link>
@@ -41,6 +44,12 @@ export default function App() {
         </ul>
         <hr></hr>
         <Switch>
+        <Route exact path="/" children={(routerProps) => <Home {...routerProps}></Home>}>
+            {/* <Home /> */}
+          </Route>
+          <Route path="/context">
+            <ContextPage />
+          </Route>
           <Route path="/redux">
             <Redux />
           </Route>
@@ -57,17 +66,15 @@ export default function App() {
             <ReactReduxPage />
             <ReactReduxHookPage></ReactReduxHookPage>
           </Route>
-          <Route path="/">
-            <Home />
-          </Route>
         </Switch>
       </div>
     </Router>
   );
 }
 
-function Home() {
-  return <ContextPage></ContextPage>
+function Home(pros) {
+  console.log('home', pros)
+  return <div>Home</div>
 }
 
 function Redux() {
