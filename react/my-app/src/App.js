@@ -7,7 +7,8 @@ import React, { Component } from "react";
 //   Redirect,
 //   useRouteMatch,
 //   useParams,
-//   withRouter
+//   withRouter,
+//   Prompt
 // } from "react-router-dom";
 
 import {
@@ -18,7 +19,8 @@ import {
   Redirect,
   useRouteMatch,
   useParams,
-  withRouter
+  withRouter,
+  Prompt
 } from "./content/k-react-router-dom";
 
 import ContextPage from "./content/context/Pages/ContextPage";
@@ -143,6 +145,13 @@ class _404Page extends Component {
     console.log('withRouter:', this.props)
     return (
       <div>
+        <Prompt
+          when={true}
+          // message="Are you sure you want to leave?"
+          message={location => (
+            location.pathname.startsWith('/context') ? true : `Are you sure you want to go to ${location.pathname}?`
+          )}
+        />
         <h3>_404Page</h3>
       </div>
     );
