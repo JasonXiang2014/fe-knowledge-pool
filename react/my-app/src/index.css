@@ -53,3 +53,7 @@ code {
   border: solid 1px gray;
   text-align: center;
 }
+
+a {
+  margin: 10px;
+}

@@ -31,6 +31,7 @@ import HocPage from "./content/hoc/pages/HocPage"
 import FormPage from "./content/form/pages/FormPage"
 import ReactReduxPage from "./content/react-redux/pages/ReactReduxPage"
 import ReactReduxHookPage from "./content/react-redux/pages/ReactReduxHookPage"
+import PrivateRouterPage from './content/private-route/PrivateRouterPage'
 
 export default function App() {
   return (
@@ -54,6 +55,9 @@ export default function App() {
           </li>
           <li>
             <Link to="/react-redux">React-Redux</Link>
+          </li>
+          <li>
+            <Link to="/private-route">路由守卫</Link>
           </li>
           <li>
             <Link to="/topics">Topics</Link>
@@ -82,6 +86,9 @@ export default function App() {
           <Route path="/react-redux">
             <ReactReduxPage />
             <ReactReduxHookPage></ReactReduxHookPage>
+          </Route>
+          <Route path="/private-route">
+            <PrivateRouterPage></PrivateRouterPage>
           </Route>
           <Route component={_404Page}></Route>
         </Switch>
