@@ -8,7 +8,7 @@ const LoginService = {
         } else {
           reject({ err: { msg: "用户名或密码错误" } });
         }
-      }, 10);
+      }, 1000);
     });
   },
   // 获取更多信息
@@ -20,7 +20,7 @@ const LoginService = {
         } else {
           reject({ msg: "获取详细信息错误" });
         }
-      }, 10);
+      }, 1000);
     });
   }
 };
