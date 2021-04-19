@@ -7,6 +7,9 @@ module.exports = {
     other: "./src/index.js", // object 写法
     a: "./src/a.js",
   },
+  //none development production
+  //webpack默认有内置插件， none就是不开启任何内置插件，development开启开发模式
+  //相关插件 production开启生产模式插件（比如压缩js代码的插件）
   mode: "development",
   //出口：
   output: {
