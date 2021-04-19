@@ -1,4 +1,6 @@
 const path = require("path")
+const htmlWebpackPlugin = require("html-webpack-plugin")
+const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 module.exports = {
   //入口：
   //string array object
@@ -31,7 +33,13 @@ module.exports = {
       //style-loader Inject CSS into the DOM.
       use: ["url-loader"]
     }],
-  }
+  },
+  plugins: [new htmlWebpackPlugin({
+    template: "./src/index.html",
+    filename: 'xj.html'
+  }),
+  new CleanWebpackPlugin()
+  ]
 }
 
 //spa 单页面应用 单入口
