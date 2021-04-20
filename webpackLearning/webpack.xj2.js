@@ -60,6 +60,10 @@ module.exports = {
           },
         ],
         exclude: /dist/
+      },
+      {
+        test: /\.woff2$/,
+        use: "file-loader"
       }
     ]
   },
