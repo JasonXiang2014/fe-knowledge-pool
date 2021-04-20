@@ -256,3 +256,84 @@ npm run dev
 
   
 
+## 9 Browerlist
+
+### 9.1  定义
+
+The config to share target browsers and Node.js versions between different front-end tools.  
+
+ 这个配置能够在不同的前端工具中分享目标浏览器和nodejs的版本，主要是为了表示当前项目的浏览器兼容情况。
+
+```
+使用方式一：
+package.json
+"browserslist": [
+"last 2 versions",
+">1%"
+]
+
+postcss.config.js
+module.exports = {
+  plugins: [
+    require("autoprefixer")({
+      //兼容can I use浏览器的最近两个版本
+      //兼容市场占有率大于1%的浏览器
+      //覆盖package.json配置的browserList
+      overrideBrowserslist: ["last 2 versions", ">1%"]
+    })
+  ]
+}
+postcss.config.js > package.json ,并且package.json 单独写是没有作用的
+使用方式二：
+.browserslistrc
+last 2 versions
+>1%
+```
+
+**package.json 和 .browserlistrc 单独使用都是没有用的，为了提供给其他插件或者工具使用的。**
+
+### 9.2 查看对应的浏览器
+
+```
+npx browserslist "last 2 versions, >1%"
+```
+
+## 10 devtool
+
+* devtool: "inline-source-map",
+
+  source-map 被保存在bundle文件内，会增大bundle文件的体积
+
+*  devtool: "source-map",
+
+  独立的source-map
+
+## 11 多页面打包通用方案
+
+```
+const glob = require('glob')
+const setMpa = () => {
+  const entry = {};
+  const htmlWebpackPlugins = []
+  const entryFiles = glob.sync(path.join(__dirname, "./src/*/index.js"))
+  console.log(entryFiles)
+
+  entryFiles.map((item, index) => {
+    const entryFile = item
+    const entryName = entryFile.match(/src\/(.*)\/index\.js$/)[1]
+    entry[entryName] = entryFile
+    htmlWebpackPlugins.push(new htmlWebpackPlugin({
+      template: path.join(__dirname, `src/${entryName}/index.html`),
+      filename: `${entryName}.html`,
+      chunks: [entryName, 'home'], // 模版依赖的chunks
+    }))
+  })
+  return {
+    entry,
+    htmlWebpackPlugins
+  }
+}
+
+const { entry, htmlWebpackPlugins } = setMpa()
+```
+
