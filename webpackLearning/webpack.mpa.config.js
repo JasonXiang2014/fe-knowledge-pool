@@ -2,13 +2,43 @@ const path = require("path")
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const htmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+// entry: {
+//   index: "./src/index.js",
+//   index2: "./src/index2.js",
+// },
+// new htmlWebpackPlugin({
+//   template: './src/index.html',
+//   filename: 'index2.html',
+//   chunks: ["index2"],
+// }),
+const glob = require('glob')
+const setMpa = () => {
+  const entry = {};
+  const htmlWebpackPlugins = []
+  const entryFiles = glob.sync(path.join(__dirname, "./src/*/index.js"))
+  console.log(entryFiles)
+
+  entryFiles.map((item, index) => {
+    const entryFile = item
+    const entryName = entryFile.match(/src\/(.*)\/index\.js$/)[1]
+    entry[entryName] = entryFile
+    htmlWebpackPlugins.push(new htmlWebpackPlugin({
+      template: path.join(__dirname, `src/${entryName}/index.html`),
+      filename: `${entryName}.html`,
+      chunks: [entryName, 'home'], // 模版依赖的chunks
+    }))
+  })
+  return {
+    entry,
+    htmlWebpackPlugins
+  }
+}
+
+const { entry, htmlWebpackPlugins } = setMpa()
 
 module.exports = {
   //入口：
-  entry: {
-    index: "./src/index.js",
-    index2: "./src/index2.js",
-  },
+  entry,
   mode: "development",
   //出口：
   output: {
@@ -71,16 +101,7 @@ module.exports = {
   },
   devtool: "inline-source-map",
   plugins: [
-    new htmlWebpackPlugin({
-      template: './src/index.html',
-      filename: 'index.html',
-      chunks: ["index"],
-    }),
-    new htmlWebpackPlugin({
-      template: './src/index.html',
-      filename: 'index2.html',
-      chunks: ["index2"],
-    }),
+    ...htmlWebpackPlugins,
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       filename: 'css/index-[chunkhash:6].css',

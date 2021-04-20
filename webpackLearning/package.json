@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack --config ./webpack.xj2.js"
+    "dev": "webpack --config ./webpack.mpa.config.js"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +15,7 @@
     "clean-webpack-plugin": "^4.0.0-alpha.0",
     "css-loader": "^5.2.2",
     "file-loader": "^6.2.0",
+    "glob": "^7.1.6",
     "html-webpack-plugin": "^4.5.2",
     "less": "^4.1.1",
     "less-loader": "^7.3.0",
