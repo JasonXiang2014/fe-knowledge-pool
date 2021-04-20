@@ -5,5 +5,5 @@ module.exports = function (source) {
     clearTimeout(timer)
     const result = source.replace("webpack4", `${this.query.name}-webpackLearning4`)
     callback(null, result)
-  }, 2000)
+  }, 1)
 }

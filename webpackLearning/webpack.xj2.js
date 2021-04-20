@@ -29,10 +29,16 @@ module.exports = {
         use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader", "less-loader"]
       },
       {
-        test: /\.(png|jpg|gif)$/i,
+        test: /\.(png|jpe?g|gif)$/i,
         //多个loader 是有执行顺序的，自后往前
         //style-loader Inject CSS into the DOM.
-        use: ["url-loader"]
+        use: {
+          loader: "file-loader",
+          options: {
+            name: "[name].[ext]",
+            outputPath: "images/"
+          }
+        }
       },
       {
         test: /\.js$/,
