@@ -70,6 +70,7 @@ module.exports = {
   resolveLoader: {
     modules: ["node_modules", "./myLoaders"]
   },
+  devtool: "source-map",
   plugins: [
     new htmlWebpackPlugin({
       template: './src/index.html',
