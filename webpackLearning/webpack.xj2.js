@@ -33,10 +33,11 @@ module.exports = {
         //多个loader 是有执行顺序的，自后往前
         //style-loader Inject CSS into the DOM.
         use: {
-          loader: "file-loader",
+          loader: "url-loader",
           options: {
             name: "[name].[ext]",
-            outputPath: "images/"
+            outputPath: "images/",
+            limit: 1024 * 2,// 小于2kb 转成base64
           }
         }
       },

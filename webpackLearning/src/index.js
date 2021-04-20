@@ -8,3 +8,4 @@ img.src = pic
 let root = document.querySelector('#app')
 root.append(img)
 //图片 file-loader  文件复制、挪移
+//url-loader 包含file-loader所有的功能
