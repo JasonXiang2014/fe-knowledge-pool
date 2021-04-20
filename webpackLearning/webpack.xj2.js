@@ -6,8 +6,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = {
   //入口：
   entry: {
+    index: "./src/index.js",
     index2: "./src/index2.js",
-    index: "./src/index.js"
   },
   mode: "development",
   //出口：
@@ -15,7 +15,7 @@ module.exports = {
     //输出资源的存放位置，必须是绝对路径
     path: path.resolve(__dirname, "./dist"),
     //资源名称
-    filename: "[name]-[contenthash:6].js",
+    filename: "[name]-[chunkhash:6].js",
   },
   module: {
     rules: [
@@ -38,11 +38,17 @@ module.exports = {
   plugins: [
     new htmlWebpackPlugin({
       template: './src/index.html',
-      filename: 'index.html'
+      filename: 'index.html',
+      chunks: ["index"],
+    }),
+    new htmlWebpackPlugin({
+      template: './src/index.html',
+      filename: 'index2.html',
+      chunks: ["index2"],
     }),
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
-      filename: 'css/index-[contenthash:6].css',
+      filename: 'css/index-[chunkhash:6].css',
     })
   ]
 }
