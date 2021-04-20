@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack --config ./webpack.xj3.js"
+    "dev": "webpack --config ./webpack.xj2.js"
   },
   "keywords": [],
   "author": "",
