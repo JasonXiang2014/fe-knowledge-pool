@@ -95,7 +95,16 @@ npm run dev
   打包出口
 
   * path  输出资源的存放位置，必须是绝对路径
-  * filename  资源名称 name就是entry里面的key值 占位符的概念 【name】【hash:number】【chunkhash】【contenthash】
+
+  * filename  资源名称 name就是entry里面的key值 占位符的概念 【name】
+
+  * 【hash:number】【chunkhash】【contenthash】的区别
+
+    hash是代码发生变化，hash值就会改变
+
+    contenthash是自身内容发生改变，contenthash才会发生变化， 一个应用是解决css缓存问题
+
+    chunkhash 是只有chunk的代码发生改变，chunkhash才会发生变化
 
 * mode
 
@@ -138,3 +147,112 @@ npm run dev
 *  有几个入口就有几个bundle的说法对不对？
 
   不对，一个入口可以做bundle拆分。
+
+## 7 webpack前端项目工程化实战
+
+### 7.1 pc端还是移动端
+
+* 移动端spa
+  * ssr
+* pc端mpa
+* 兼容性：需要兼容的浏览器和版本
+
+### 7.2 多人参与还是单人
+
+* 代码规范
+* Eslint+ prettier
+* 提交规范
+
+### 7.3 技术栈
+
+* vue
+* react
+* 样式
+  * less
+  * sass
+  * posts == babel
+
+* Ts & babel -> es6+
+* 模版引擎
+  * ejs
+  * pug
+
+* 是否需要支持三方字体（阿里巴巴普惠体）
+
+### 7.4 工具类
+
+* 安装依赖包 切换国内源 npm config
+* .npmrc
+
+## 8 自定义loader
+
+多个loader 是有执行顺序的，自后往前
+
+* 函数 声明式函数 不可以是箭头函数
+
+* 函数必须有返回值
+
+  ```
+  replace-loader.js
+  
+  module.exports = function (source) {
+    return source.replace("webpack4", `${this.query.name}-webpackLearning4`)
+  }
+  ```
+
+* 如何返回多值 this.callback
+
+  ```
+  replace-loader.js
+  
+  module.exports = function (source) {
+    const result = source.replace("webpack4", `${this.query.name}-webpackLearning4`)
+  	this.callback(null, result)
+  }
+  ```
+
+  
+
+* 如何处理异步操作 this.async
+
+  ```
+  replace-loader-async.js
+  
+  module.exports = function (source) {
+    const callback = this.async()
+    let timer = setTimeout(() => {
+      clearTimeout(timer)
+      const result = source.replace("webpack4", `${this.query.name}-webpackLearning4`)
+      callback(null, result)
+    }, 2000)
+  }
+  ```
+
+* 如何处理多个自定义loader
+
+  ```
+  module: {
+      rules: [
+        {
+          test: /\.js$/,
+          use: [
+            "replace-loader.js",
+            {
+              loader: "replace-loader-async.js",
+              options: {
+                name: 'xj'
+              }
+            },
+          ],
+          exclude: /dist/
+        }
+      ]
+    },
+  
+  resolveLoader: {
+      modules: ["node_modules", "./myLoaders"]
+  },
+  ```
+
+  
+
