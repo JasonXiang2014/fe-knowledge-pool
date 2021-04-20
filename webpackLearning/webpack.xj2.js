@@ -2,6 +2,7 @@ const path = require("path")
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const htmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { options } = require("less");
 
 module.exports = {
   //入口：
@@ -32,8 +33,31 @@ module.exports = {
         //多个loader 是有执行顺序的，自后往前
         //style-loader Inject CSS into the DOM.
         use: ["url-loader"]
+      },
+      {
+        test: /\.js$/,
+        // use: path.resolve(__dirname, "myLoaders/replace-loader.js"),
+        // use: {
+        //   loader: path.resolve(__dirname, "myLoaders/replace-loader.js"),
+        //   options: {
+        //     name: 'xj'
+        //   }
+        // },
+        use: [
+          "replace-loader.js",
+          {
+            loader: "replace-loader-async.js",
+            options: {
+              name: 'xj'
+            }
+          },
+        ],
+        exclude: /dist/
       }
     ]
+  },
+  resolveLoader: {
+    modules: ["node_modules", "./myLoaders"]
   },
   plugins: [
     new htmlWebpackPlugin({
