@@ -1,6 +1,8 @@
 const path = require("path")
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const htmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
 module.exports = {
   //入口：
   entry: "./src/index2.js",
@@ -20,7 +22,7 @@ module.exports = {
       },
       {
         test: /\.less$/,
-        use: ['style-loader', "css-loader", "postcss-loader", "less-loader"]
+        use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader", "less-loader"]
       },
     ]
   },
@@ -29,6 +31,9 @@ module.exports = {
       template: './src/index.html',
       filename: 'index.html'
     }),
-    new CleanWebpackPlugin()
+    new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'index.css',
+    })
   ]
 }
