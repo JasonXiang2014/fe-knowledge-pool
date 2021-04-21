@@ -3,6 +3,7 @@ import pic from './images/logo.jpg'
 import { str } from './a.js' // * webpack对前端来说只支持js模块和json模块 .js .json
 import axios from "axios"
 import { addNewButton, number } from './number'
+import "@babel/polyfill"
 console.log(`${str} webpack4.x`)
 console.log(pic)
 let img = new Image();
@@ -28,3 +29,9 @@ if (module.hot) {
     number()
   })
 }
+
+//babel
+const arr = [new Promise(() => { }), new Promise(() => { })]
+arr.map((item) => {
+  console.log(item)
+})

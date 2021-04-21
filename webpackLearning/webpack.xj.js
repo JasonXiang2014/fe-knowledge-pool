@@ -44,6 +44,15 @@ module.exports = {
       //多个loader 是有执行顺序的，自后往前
       //style-loader Inject CSS into the DOM.
       use: ["url-loader"]
+    }, {
+      test: /\.js$/,
+      use: {
+        loader: "babel-loader",
+        options: {
+          presets: ["@babel/preset-env"], //预设插件
+          plugin: [],
+        }
+      },
     }],
   },
   plugins: [new htmlWebpackPlugin({
