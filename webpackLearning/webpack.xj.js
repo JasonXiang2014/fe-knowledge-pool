@@ -1,6 +1,7 @@
 const path = require("path")
 const htmlWebpackPlugin = require("html-webpack-plugin")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
+const webpack = require("webpack")
 module.exports = {
   //入口：
   //string array object
@@ -28,6 +29,7 @@ module.exports = {
         target: "http://localhost:9092/"
       }
     },
+    hot: true,
   },
   module: { //让webpack支持更多的模块 (webpack对前端来说只支持js模块和json模块)
     //css-loader 只是支持webpack解析css文件，但是还无法使用
@@ -47,7 +49,8 @@ module.exports = {
     template: "./src/index.html",
     filename: 'index.html'
   }),
-  new CleanWebpackPlugin()
+  new CleanWebpackPlugin(),
+  new webpack.HotModuleReplacementPlugin(),
   ]
 }
 
