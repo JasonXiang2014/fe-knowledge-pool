@@ -30,6 +30,7 @@ module.exports = {
       }
     },
     hot: true,
+    hotOnly: true,
   },
   module: { //让webpack支持更多的模块 (webpack对前端来说只支持js模块和json模块)
     //css-loader 只是支持webpack解析css文件，但是还无法使用

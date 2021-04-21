@@ -2,6 +2,7 @@ import css from './style/index.css'
 import pic from './images/logo.jpg'
 import { str } from './a.js' // * webpack对前端来说只支持js模块和json模块 .js .json
 import axios from "axios"
+import { addNewButton, number } from './number'
 console.log(`${str} webpack4.x`)
 console.log(pic)
 let img = new Image();
@@ -15,12 +16,15 @@ axios.get("/api/info").then(res => {
   console.log(res)
 })
 
-var btn = document.createElement("button")
-btn.innerHTML = "新增"
-document.body.appendChild(btn)
 
-btn.onclick = function () {
-  var div = document.createElement("div")
-  div.innerHTML = "item"
-  document.body.appendChild(div)
+addNewButton()
+number()
+
+if (module.hot) {
+  module.hot.accept("./number.js", () => {
+    document.body.removeChild(document.getElementById("customButton"))
+    document.body.removeChild(document.getElementById("number"))
+    addNewButton()
+    number()
+  })
 }
