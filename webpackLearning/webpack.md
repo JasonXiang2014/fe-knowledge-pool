@@ -337,3 +337,225 @@ const setMpa = () => {
 const { entry, htmlWebpackPlugins } = setMpa()
 ```
 
+## 12 本地开发服务
+
+### 12.1 目的
+
+提升开发体验
+
+### 12.2 兼容性
+
+webpack-dev-server 3.x版本 和webpack-cli 存在不兼容问题
+
+```
+webpack-cli 3.x 
+scripts: {
+ 	"serve": "webpack-dev-server"
+}
+
+webpack-cli 4.x
+scripts: {
+ 	"serve": "webpack serve"
+}
+```
+
+### 12.3   注意事项
+
+```
+plugins: [new htmlWebpackPlugin({
+    template: "./src/index.html",
+    filename: 'index.html'
+}),
+
+```
+
+**htmlWebpackPlugin的filename要设置为index.html，不然localhost:8080 默认不会走index.html, 而是会展示根目录的文件夹列表。**
+
+```
+If you're having trouble, navigating to the /webpack-dev-server route will show where files are served. For example, http://localhost:9000/webpack-dev-server.
+```
+
+**locahost:port/webpack-dev-server 就是打包后的文件所处的位置**
+
+### 12.4 命令行参数
+
+```
+--no-stats : 不输出打包信息
+--open: 自动打开浏览器
+--port: 端口👌
+--content-base: 本地服务存储的内容来源地址 
+比如：--content-base dist/, 表示 locolhost:8081/的来源就是dist目录下
+```
+
+```
+devServer: {
+  open: true,
+  port: 8081,
+  contentBase: path.join(__dirname, "dist"),
+  proxy: {
+  "/api": {
+    target: "http://localhost:9092/"
+    }
+  },
+},
+```
+
+### 13 HMR :hot module replacement 热替换模块
+
+###  13.1 兼容性
+
+hmr提升开发效率，不支持抽离出的css（miniCssExtractPlugin） ，开发环境还是要用style-loader+ css-loader，上生产环境再切换为miniCssExtractPlugin。
+
+### 13.2 css更新
+
+```
+const webpack = require("webpack")
+
+devServer: {
+	hot: true,
+},
+plugins: [
+  new webpack.HotModuleReplacementPlugin(),
+]
+```
+
+### 13.3 js更新
+
+```
+devServer: {
+  hot: true,
+  hotOnly: true, //不开启浏览器刷新
+},
+```
+
+js模块更新的本质是删除一个模块，重新加入一个模块
+
+```
+number.js
+
+const addNewButton = function () {
+  var btn = document.createElement("button")
+  btn.innerHTML = "新增2休闲鞋"
+  btn.setAttribute("id", "customButton")
+  document.body.appendChild(btn)
+
+  btn.onclick = function () {
+    var div = document.createElement("div")
+    div.innerHTML = "item"
+    document.body.appendChild(div)
+  }
+}
+
+function number() {
+  var div = document.createElement("div")
+  div.innerHTML = "333"
+  div.setAttribute("id", "number")
+  document.body.appendChild(div)
+}
+export {
+  addNewButton,
+  number,
+}
+
+index.js
+addNewButton()
+number()
+if (module.hot) {
+  module.hot.accept("./number.js", () => {
+    document.body.removeChild(document.getElementById("customButton"))
+    document.body.removeChild(document.getElementById("number"))
+    addNewButton()
+    number()
+  })
+}
+```
+
+其他代码和框架
+
+* React Hot Loader
+* Vue Loader
+* Elm Hot webpack Loader
+* Angular HMR
+* Svelte Loader
+
+补充：
+
+react-app-rewired是react社区开源的一个修改CRA配置的工具，例如扩展Create React App的Webpack配置，而customize-cra提供了一组用于自定义利用react-app-rewired核心功能的Create React App v2配置, 可以通过config-overrides.js文件来对webpack配置进行扩展 
+
+## 14 babel
+
+### 14.1 语法转化 
+
+const ->var 
+
+()=>{} function(){}
+
+7.x 
+
+​	env对标准的es6语法转化
+
+​	flow 类型检查
+
+​	react preset-react 支持jsx语法
+
+​	typescript 支持ts语法
+
+6.x
+
+​	预设插件
+
+	* babel-preset-es2015
+	* babel-preset-es2016
+
+ *  babel-preset-es2017
+     *  tc39正式发布
+        	*  技术委员会第39号，ecma的一部分
+         *  精简了填案过程
+            	*  Stage-0 想法阶段
+            	*  Stage-1值得更进
+            	*  Stage-2 指定规范
+            	*  Stage-3 候选发布名单
+            	*  Stage-4 完成
+	*  babel-preset-latest
+	*  babel-preset-stage-1
+	*  babel-preset-stage-2
+ *  babel-preset-stage-3
+    	*  tc39草案阶段
+	*  ...
+
+## 14.2 特性补齐（polyfill）
+
+* Promise symbol proxy 实例方法：[].find
+* 解决方案 就是在目标环境中添加缺失的特性
+
+### 14.3 配置文件
+
+* .babelrc
+* babel.config.js
+* package.json 直接写配置
+* babel-loader
+
+### 14.4 安装
+
+```
+npm install babel-loader @babel/core @babel/preset-env -D
+babel-loader : webpack 沟通babel的桥梁
+@babel/core: babel的核心模块，不做具体的任务处理，交给相关的生态插件处理
+@babel/preset-env: 处理语法转化
+
+```
+
+### 14.5 配置
+
+```
+{
+  test: /\.js$/,
+  use: {
+  loader: "babel-loader",
+  options: {
+    presets: ["@babel/preset-env"], //预设插件
+    plugin: [],
+  }
+},
+```
+
