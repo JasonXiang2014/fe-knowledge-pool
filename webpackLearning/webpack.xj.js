@@ -20,6 +20,15 @@ module.exports = {
     //资源名称 name就是entry里面的key值 占位符的概念 【name】【hash:number】【chunkhash】【contenthash】
     filename: "[name]-[hash:6].js",
   },
+  devServer: {
+    open: true,
+    contentBase: path.join(__dirname, "dist"),
+    proxy: {
+      "/api": {
+        target: "http://localhost:9092/"
+      }
+    },
+  },
   module: { //让webpack支持更多的模块 (webpack对前端来说只支持js模块和json模块)
     //css-loader 只是支持webpack解析css文件，但是还无法使用
     rules: [{
@@ -36,7 +45,7 @@ module.exports = {
   },
   plugins: [new htmlWebpackPlugin({
     template: "./src/index.html",
-    filename: 'xj.html'
+    filename: 'index.html'
   }),
   new CleanWebpackPlugin()
   ]

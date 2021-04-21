@@ -5,15 +5,18 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack --config ./webpack.mpa.config.js"
+    "dev": "webpack --config ./webpack.mpa.config.js",
+    "serve": "webpack serve --config ./webpack.xj.js --no-stats  --open --port 8082"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "autoprefixer": "^10.2.5",
+    "axios": "^0.21.1",
     "clean-webpack-plugin": "^4.0.0-alpha.0",
     "css-loader": "^5.2.2",
+    "express": "^4.17.1",
     "file-loader": "^6.2.0",
     "glob": "^7.1.6",
     "html-webpack-plugin": "^4.5.2",
@@ -25,6 +28,8 @@
     "style-loader": "^2.0.0",
     "url-loader": "^4.1.1",
     "webpack": "^4.46.0",
-    "webpack-cli": "^4.6.0"
-  }
+    "webpack-cli": "^4.6.0",
+    "webpack-dev-server": "^3.11.2"
+  },
+  "dependencies": {}
 }
