@@ -49,8 +49,7 @@ module.exports = {
       use: {
         loader: "babel-loader",
         options: {
-          presets: ["@babel/preset-env"], //预设插件
-          plugin: [],
+          // presets: ["@babel/preset-env"], //预设插件
         }
       },
     }],
