@@ -13,6 +13,7 @@
         "corejs": 3, //默认就是2，可以手动改为3，但是需要额外单独安装 npm i core-js@3 -D
         "useBuiltIns": "usage" //使用usage，不需要手动导入@babel/polyfill,会自动导入
       }
-    ]
+    ],
+    ["@babel/preset-react"]
   ] //预设插件
 }
