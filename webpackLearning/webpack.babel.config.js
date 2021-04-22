@@ -19,22 +19,7 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        use: {
-          loader: "babel-loader",
-          options: {
-            presets: [["@babel/preset-env", {
-              targets: {
-                //目标环境
-                edge: "17",
-                firefox: "60",
-                chrome: "67",
-                safari: "11",
-              },
-              corejs: 3, //默认就是2，可以手动改为3，但是需要额外单独安装
-              useBuiltIns: "usage", //使用usage，不需要手动导入@babel/polyfill,会自动导入
-            }]], //预设插件
-          }
-        }
+        use: "babel-loader"
       }
     ]
   },
