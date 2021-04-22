@@ -1,5 +1,3 @@
-const { compilation } = require("webpack")
-
 class txtWebpackPlugin {
   constructor(options) {
     console.log(options)

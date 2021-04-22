@@ -2,6 +2,7 @@ const path = require("path")
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const htmlWebpackPlugin = require('html-webpack-plugin')
 const txtWebpackPlugin = require("./myPlugins/txt-webpack-plugins")
+const filesWebpackPlugin = require("./myPlugins/files-webpack-plugins")
 
 module.exports = {
   //入口：
@@ -38,5 +39,6 @@ module.exports = {
     new txtWebpackPlugin({
       name: 'txtWebpackPlugin',
     }),
+    new filesWebpackPlugin()
   ]
 }
