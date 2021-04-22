@@ -531,8 +531,33 @@ const ->var
 ### 14.3 配置文件
 
 * .babelrc
+
+  ```
+  {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            //目标环境
+            "edge": "17",
+            "firefox": "60",
+            "chrome": "67",
+            "safari": "11"
+          },
+          "corejs": 3, //默认就是2，可以手动改为3，但是需要额外单独安装 npm i core-js@3 -D
+          "useBuiltIns": "usage" //使用usage，不需要手动导入@babel/polyfill,会自动导入
+        }
+      ]
+    ] //预设插件
+  }
+  
+  ```
+
 * babel.config.js
+
 * package.json 直接写配置
+
 * babel-loader
 
 ### 14.4 安装
@@ -556,6 +581,287 @@ babel-loader : webpack 沟通babel的桥梁
     presets: ["@babel/preset-env"], //预设插件
     plugin: [],
   }
+}
+//@babel/preset-env es6语法转换
+特性补齐需要在文件内 import "@babel/polyfill"，会导致bundle文件体积变大。
+所以引入了按需加载。
+```
+
+### 14.6 按需加载
+
+```
+@babel/polyfill 默认依赖core-js2.x 和regenerator-runtime
+"dependencies": {
+  "core-js": "^2.6.5",
+  "regenerator-runtime": "^0.13.4"
 },
+```
+
+babel >=7.4.0, @babel/polyfill 已经被废弃，推荐独立安装和导入
+
+```
+import "core-js/stable"; //3.x
+import "regenerator-runtime/runtime";
+```
+
+core-js2x 与3x的区别
+
+3x支持的语法更多。
+
+```
+webpack配置文件
+{
+  test: /\.js$/,
+  use: {
+    loader: "babel-loader",
+    options: {
+    presets: [["@babel/preset-env", {
+    targets: {
+      //目标环境
+      edge: "17",
+      firefox: "60",
+      chrome: "67",
+      safari: "11",
+  	},
+  	corejs: 3, //默认就是2，可以手动改为3，但是需要额外单独安装 npm i core-js@3 -D
+  	useBuiltIns: "usage", //使用usage，不需要手动导入@babel/polyfill,会自动导入
+  		}]], //预设插件
+  	}
+  }
+}
+```
+
+### 14.6 如何支持react jsx语法
+
+```
+npm install @babel/preset-react -D
+
+.babelrc
+{
+  "presets": [
+    ["@babel/preset-react"]
+  ]
+}
+```
+
+## 15  自定义plugin
+
+对webpack的功能扩展
+
+### 15.1 生命周期
+
+触发时机
+
+生成某种资源或者一些操作
+
+webpack从打包到结束，是有生命周期的概念的，或者说叫钩子。
+
+```
+const webpack = require("webpack")
+const config = require("../webpack.xj.js")
+const compiler = webpack(config)
+Object.keys(compiler.hooks).forEach((hookName) => {
+  compiler.hooks[hookName].tap('xxx', () => {
+    console.log(`run=====> ${hookName}`)
+  })
+})
+
+compiler.run()
+
+//output
+run=====> beforeRun
+run=====> run
+run=====> normalModuleFactory
+run=====> contextModuleFactory
+run=====> beforeCompile
+run=====> compile
+run=====> thisCompilation
+run=====> compilation
+run=====> make
+run=====> normalModuleFactory
+run=====> contextModuleFactory
+run=====> beforeCompile
+run=====> compilation
+run=====> afterCompile
+run=====> afterCompile
+run=====> shouldEmit
+run=====> emit
+run=====> assetEmitted
+run=====> assetEmitted
+run=====> assetEmitted
+run=====> afterEmit
+run=====> done
+```
+
+### 15.2自定义txtWebpackPlugin
+
+```
+const { compilation } = require("webpack")
+
+class txtWebpackPlugin {
+  constructor(options) {
+    console.log(options)
+  }
+  //如何钩入hooks
+  apply(compiler) {
+    //异步钩子
+    compiler.hooks.emit.tapAsync("txtWebpackPlugin", (compilation, cb) => {
+      compilation.assets["test.txt"] = {
+        source: function () {
+          return "hello myplugins"
+        },
+        size: function () {
+          return 1024
+        }
+      }
+      cb()
+    })
+
+    compiler.hooks.compile.tap("txtWebpackPlugin", (compilation) => {
+      console.log('hello sync hooks')
+    })
+  }
+}
+
+module.exports = txtWebpackPlugin
+```
+
+## 16 web pack 打包bundle 原理分析与实现
+
+npx webpack
+
+​	webpack -> config ->  打包入口 输出目录（入口文件在哪）-> 分析是否有依赖，以及依赖模块的路径-> 解析处理内容（es6+ 转es5）-> chunk code (缺失函数，require exports)
+
+//chunk 伪代码
+
+(Function(){
+
+​	//缺失函数的补齐
+
+​	require
+
+​		eval(chunkcode)
+
+​	exports
+
+})({
+
+​	//依赖模块 入口模块的路径为key
+
+​	key: 模块处理后的chunkcode
+
+})
+
+//simple webpack
+
+* webpack.config.js
+  * entry
+  * output
+  * mode
+* Lib
+  * webpack.js
+    * Webpack class
+    * run()
+      * 入口文件的路径
+      * 分析文件的内容
+        * 模块依赖路径
+        * 内容处理
+        * chunkcode
+      * 递归处理所有依赖（index.js->a.js->b.js）
+      * 生成bundle结构，生成文件，放入dist目录
+* Bundle.js
+  *  引入lib/webpack.js
+  * 引入webpack options
+  * compiler = Webpack(config)
+  * compiler.run()
+
+```
+const fs = require("fs")
+const path = require("path")
+//@babel/parser 可以将代码解析成ast
+const parser = require("@babel/parser")
+//@babel/traverse 可以对ast做增删改查
+const traverse = require("@babel/traverse").default
+const { transformFromAst } = require("@babel/core")
+
+module.exports = class Webpack {
+  constructor(options) {
+    console.log(options)
+    this.entry = options.entry
+    this.output = options.output
+    this.modules = []
+  }
+  run() {
+    const info = this.parse(this.entry)
+    this.modules.push(info)
+    //递归处理所有依赖
+    for (let i = 0; i < this.modules.length; i++) {
+      const item = this.modules[i]
+      const { dependencies } = item
+      if (dependencies) {
+        for (let j in dependencies) {
+          this.modules.push(this.parse(dependencies[j]))
+        }
+      }
+    }
+    console.log('xjDebugger:----------modules', this.modules)
+    //修改数据结构 数组转对象
+    const obj = {}
+    this.modules.forEach(item => {
+      obj[item.entryFile] = {
+        dependencies: item.dependencies,
+        code: item.code
+      }
+    })
+    console.log('xjDebugger:----------obj', obj)
+
+    //代码生成 文件生成
+    this.file(obj)
+  }
+
+  parse(entryFile) {
+    const content = fs.readFileSync(entryFile, "utf-8")
+    const ast = parser.parse(content, { sourceType: "module" })
+    // console.log('xjDebugger:ast', ast.program, ast.program.body[0].source)
+    // console.log('xjDebugger:source0', ast.program.body[0].source)
+    const dependencies = {}
+    traverse(ast, {
+      ImportDeclaration({ node }) {
+        const newPathName = "./" + path.join(path.dirname(entryFile), node.source.value)
+        console.log('xjDebugger:-----------node', newPathName)
+        dependencies[node.source.value] = newPathName
+      }
+    })
+    const { code } = transformFromAst(ast, null, {
+      presets: ["@babel/preset-env"],
+    })
+    console.log('xjDebugger:----------code', code)
+    console.log('xjDebugger:----------dependencies', dependencies)
+    return {
+      entryFile,
+      dependencies,
+      code
+    }
+  }
+  file(code) {
+    const filePath = path.join(this.output.path, this.output.filename)
+    const _code = JSON.stringify(code)
+    //生成bundle
+    const bundle = `(function(modules){
+      function require(module){
+        function newRequire(relativePath){
+          return require(modules[module].dependencies[relativePath])
+        }
+        var exports = {};
+        (function(require,exports,code){
+          eval(code)
+        })(newRequire, exports,modules[module].code)
+        return exports;
+      }
+      require('${this.entry}')
+    })(${_code})`
+    fs.writeFileSync(filePath, bundle, 'utf-8')
+  }
+}
 ```
 
