@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack --config ./webpack.mpa.config.js",
+    "xj2": "webpack --config ./webpack.xj2.js",
     "serve": "webpack serve --config ./webpack.xj.js --no-stats  --open --port 8082"
   },
   "keywords": [],
