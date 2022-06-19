@@ -133,6 +133,8 @@ npm run dev
   * style-loader: 把css插入到DOM中
   * less-loader: webpack 将 Less 编译为 CSS 的 loader。
   * postcss-loader: 使用 PostCSS 处理 CSS 的 loader。
+  * file-loader: 图片（文件复制、挪移）
+  * url-loader: 包含file-loader所有的功能
 
   postcss.config.js
   module.exports = {
@@ -175,9 +177,16 @@ npm run dev
         use: ["style-loader","css-loader","less-loader"],
       },
       {
-        test: /\.png$/,
-        use: ""
-      }
+        test: /\.(png|jpe?g|gif)$/i,
+        use: {
+          loader: "url-loader",
+          options: {
+            name: "[name].[ext]",
+            outputPath: "images/",
+            limit: 1024 * 2,// 小于2kb 转成base64
+          }
+        }
+      },
     ]
   }
 * bundle
@@ -312,12 +321,6 @@ The config to share target browsers and Node.js versions between different front
 
 ```
 使用方式一：
-package.json
-"browserslist": [
-"last 2 versions",
-">1%"
-]
-
 postcss.config.js
 module.exports = {
   plugins: [
@@ -329,14 +332,26 @@ module.exports = {
     })
   ]
 }
-postcss.config.js > package.json ,并且package.json 单独写是没有作用的
+
+package.json
+"browserslist": [
+"last 2 versions",
+">1%"
+]
+
+postcss.config.js > package.json ,package.json 单独写是没有作用的，需要依赖
+postcss.config.js，如果postcss.config.js里面配置了就走它里面的配置，没有走
+package.json里面的配置。.browserslistrc原理类似。
+
 使用方式二：
 .browserslistrc
 last 2 versions
 >1%
 ```
 
-**package.json 和 .browserlistrc 单独使用都是没有用的，为了提供给其他插件或者工具使用的。**
+**package.json 和 .browserlistrc 单独使用都是没有用的，为了提供给其他插件或者工具使用的。比如**
+**Autoprefixer**
+**babel**
 
 ### 9.2 查看对应的浏览器
 
@@ -353,6 +368,8 @@ npx browserslist "last 2 versions, >1%"
 *  devtool: "source-map",
 
   独立的source-map
+
+  source-map 错误和源码的映射关系
 
 ## 11 多页面打包通用方案
 
@@ -423,6 +440,10 @@ If you're having trouble, navigating to the /webpack-dev-server route will show 
 
 **locahost:port/webpack-dev-server 就是打包后的文件所处的位置**
 
+webpack-dev-server 其实就是将打包后的资源放在了内存中， 通过查看locahost:port/webpack-dev-server可以查看
+打包后文件所处的位置（在内存中），但是如果没有指定一个出口html的话，会展示项目根目录的文件夹列表。
+
+webpack-dev-server 还可以监听文件的变化自动构建并自动刷新
 ### 12.4 命令行参数
 
 ```
@@ -435,16 +456,51 @@ If you're having trouble, navigating to the /webpack-dev-server route will show 
 
 ```
 devServer: {
-  open: true,
-  port: 8081,
-  contentBase: path.join(__dirname, "dist"),
-  proxy: {
+  open: true, //自动打开浏览器
+  port: 8081, //端口号
+  contentBase: path.join(__dirname, "dist"), //指定资源目录文件，如果输出目录就是dist，默认就是dist
+  proxy: { //指定代理路径，当服务端还没有数据时，可以本地mock数据, 还可以用来解决跨域问题。
   "/api": {
     target: "http://localhost:9092/"
     }
   },
+  hot: true, //配合css HMR使用
+  hotOnly, //配合js HMR 使用， 不刷新浏览器
+  publicPath: /dist/, 
+  //通过访问 http://localhost:8081/webpack-dev-server 可以得到devServer启动后的资源访问路径，
+  //点击静态资源可以看到静态资源的访问路径为 http://localhost:8080${publicPath}index.html
 },
 ```
+
+proxy 解决跨域问题
+node  server.js
+浏览器输入：http://localhost:9092/api/info
+返回 
+{
+  name: "项布斯"
+}
+
+index.js
+axios.get("http://localhost:9092/api/info/api/info").then(res => {
+  console.log(res)
+})
+执行npm run serve
+
+```
+Access to XMLHttpRequest at 'http://localhost:9092/api/info/api/info' from origin 'http://localhost:8082' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+
+GET http://localhost:9092/api/info/api/info net::ERR_FAILED 404
+
+```
+解决方案
+proxy: {
+  "/api": {
+    target: "http://localhost:9092/"
+  }
+},
+axios.get("/api/info").then(res => {
+  console.log(res)
+})
 
 ### 13 HMR :hot module replacement 热替换模块
 
@@ -458,7 +514,7 @@ hmr提升开发效率，不支持抽离出的css（miniCssExtractPlugin） ，�
 const webpack = require("webpack")
 
 devServer: {
-	hot: true,
+	hot: true, //在不刷新浏览器的情况下，更新css样式
 },
 plugins: [
   new webpack.HotModuleReplacementPlugin(),
@@ -469,8 +525,7 @@ plugins: [
 
 ```
 devServer: {
-  hot: true,
-  hotOnly: true, //不开启浏览器刷新
+  hotOnly: true, //浏览器不自动刷新
 },
 ```
 
@@ -518,8 +573,10 @@ if (module.hot) {
 
 其他代码和框架
 
-* React Hot Loader
-* Vue Loader
+现代前端基本都是用框架来开发，如vue、react，很少用原生js来开发，所以会有封装好的loader，
+可以使HMR与各种框架和库平滑的进行交互。
+* React Hot Loader 实时调整react组件
+* Vue Loader 此loader支持vue组件的HMR，提供开箱即用体验
 * Elm Hot webpack Loader
 * Angular HMR
 * Svelte Loader
